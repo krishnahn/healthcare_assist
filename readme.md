@@ -1,7 +1,3 @@
-Here’s a professional **README.md** tailored for your project hosted at **[krishnahn/healthcare_assist GitHub Repository](https://github.com/krishnahn/healthcare_assist)**. Since the existing repo doesn’t include a README or documentation, I drafted this based on the files present (FastAPI backend, Streamlit launcher, and frontend folder structure) to clearly explain what the project is, how to use it, and how to contribute.
-
----
-
 # Healthcare Assist 
 
 **AI-Powered Healthcare Assistant with RAG & Conversational UI**
