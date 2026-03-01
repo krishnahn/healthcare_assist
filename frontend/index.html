@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareGuide Healthcare Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e6fffb 0%, #f0fdfa 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(120deg, #0f766e 0%, #14b8a6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+        }
+
+        .search-box label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], select {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #0f766e;
+        }
+
+        button {
+            padding: 15px 40px;
+            background: linear-gradient(120deg, #0f766e 0%, #14b8a6 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #14b8a6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .answer-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #0f766e;
+            margin-bottom: 20px;
+        }
+
+        .answer-box h3 {
+            color: #0f766e;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .answer-text {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .citations {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .citations h3 {
+            color: #0d9488;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .citation-item {
+            padding: 15px;
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #0d9488;
+        }
+
+        .citation-item strong {
+            color: #0f766e;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .citation-text {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .metadata {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #c62828;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .upload-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .upload-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #0f766e;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #0d9488;
+        }
+
+        .file-name {
+            margin-left: 15px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🩺 CareGuide Chatbot</h1>
+            <p>Healthcare-themed assistant for basic wellness guidance</p>
+        </div>
+
+        <div class="content">
+            <!-- Search Section -->
+            <div class="search-box">
+                <label for="query">Ask a Health Question</label>
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="query" 
+                        placeholder="e.g., I have mild fever symptoms. What home care is usually recommended?"
+                        onkeypress="if(event.key === 'Enter') searchDocuments()"
+                    >
+                </div>
+                
+                <label for="store">Select Document Store</label>
+                <div class="input-group">
+                    <select id="store">
+                        <option value="my-docs">my-docs</option>
+                    </select>
+                    <button onclick="loadStores()">Refresh Stores</button>
+                    <button onclick="searchDocuments()">Chat</button>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; color: #666;">Generating healthcare guidance...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error" id="error"></div>
+
+            <!-- Results -->
+            <div class="result" id="result">
+                <div class="answer-box">
+                    <h3>📝 Answer</h3>
+                    <div class="answer-text" id="answer"></div>
+                </div>
+
+                <div class="citations">
+                    <h3>📚 Sources (<span id="citation-count">0</span>)</h3>
+                    <div id="citations-list"></div>
+                </div>
+
+                <div class="metadata" id="metadata"></div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h3>📤 Upload Document</h3>
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" onchange="updateFileName()">
+                    <label for="fileInput" class="file-input-label">Choose File</label>
+                    <span class="file-name" id="fileName">No file chosen</span>
+                </div>
+                <button onclick="uploadFile()" style="margin-left: 15px;">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+
+        // Load available stores on page load
+        window.onload = function() {
+            loadStores();
+        };
+
+        // Load stores from API
+        async function loadStores() {
+            try {
+                const response = await fetch(`${API_BASE}/api/stores`);
+                const data = await response.json();
+                
+                const storeSelect = document.getElementById('store');
+                storeSelect.innerHTML = '';
+                
+                data.stores.forEach(store => {
+                    const option = document.createElement('option');
+                    option.value = store.display_name;
+                    option.textContent = store.display_name;
+                    storeSelect.appendChild(option);
+                });
+            } catch (error) {
+                showError('Failed to load stores. Make sure the API server is running.');
+            }
+        }
+
+        // Search documents
+        async function searchDocuments() {
+            const query = document.getElementById('query').value.trim();
+            const store = document.getElementById('store').value;
+
+            if (!query) {
+                showError('Please enter a question');
+                return;
+            }
+
+            // Show loading, hide results and errors
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/search`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        store_name: store,
+                        temperature: 0.0,
+                        max_tokens: 1024
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (error) {
+                showError(`Search failed: ${error.message}. Make sure the API server is running at ${API_BASE}`);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // Display search results
+        function displayResults(data) {
+            // Display answer
+            document.getElementById('answer').textContent = data.answer;
+
+            // Display citations
+            const citationsList = document.getElementById('citations-list');
+            citationsList.innerHTML = '';
+            
+            document.getElementById('citation-count').textContent = data.citations.length;
+
+            if (data.citations.length > 0) {
+                data.citations.forEach((citation, index) => {
+                    const citationDiv = document.createElement('div');
+                    citationDiv.className = 'citation-item';
+                    citationDiv.innerHTML = `
+                        <strong>${index + 1}. ${citation.file_name}</strong>
+                        <div class="citation-text">${citation.chunk_text.substring(0, 200)}...</div>
+                    `;
+                    citationsList.appendChild(citationDiv);
+                });
+            } else {
+                citationsList.innerHTML = '<p style="color: #666;">No sources found</p>';
+            }
+
+            // Display metadata
+            const metadata = data.metadata;
+            document.getElementById('metadata').innerHTML = `
+                ⏱️ Processing time: ${metadata.processing_time.toFixed(2)}s | 
+                🤖 Model: ${metadata.model} | 
+                📊 Sources: ${metadata.grounding_chunks_count || 0}
+            `;
+
+            // Show results
+            document.getElementById('result').style.display = 'block';
+        }
+
+        // Upload file
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const store = document.getElementById('store').value;
+
+            if (!fileInput.files[0]) {
+                showError('Please select a file to upload');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('store_name', store);
+
+            try {
+                document.getElementById('loading').style.display = 'block';
+                
+                const response = await fetch(`${API_BASE}/api/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(`✅ ${data.message}`);
+                    fileInput.value = '';
+                    document.getElementById('fileName').textContent = 'No file chosen';
+                } else {
+                    throw new Error(data.detail || 'Upload failed');
+                }
+
+            } catch (error) {
+                showError(`Upload failed: ${error.message}`);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // Update file name display
+        function updateFileName() {
+            const fileInput = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
+            
+            if (fileInput.files[0]) {
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                fileName.textContent = 'No file chosen';
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
