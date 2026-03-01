@@ -2,7 +2,7 @@ Here’s a professional **README.md** tailored for your project hosted at **[kri
 
 ---
 
-# **Healthcare Assist **
+# Healthcare Assist 
 
 **AI-Powered Healthcare Assistant with RAG & Conversational UI**
 
