@@ -1,1 +1,172 @@
+Here’s a professional **README.md** tailored for your project hosted at **[krishnahn/healthcare_assist GitHub Repository](https://github.com/krishnahn/healthcare_assist)**. Since the existing repo doesn’t include a README or documentation, I drafted this based on the files present (FastAPI backend, Streamlit launcher, and frontend folder structure) to clearly explain what the project is, how to use it, and how to contribute.
+
+---
+
+# **Healthcare Assist **
+
+**AI-Powered Healthcare Assistant with RAG & Conversational UI**
+
+Healthcare Assist is a full-stack application that provides an intelligent **healthcare chatbot and RAG (Retrieval-Augmented Generation) search API** to help users ask medical questions, retrieve relevant information from uploaded documents, and interact through an intuitive UI.
+
+This repository combines a **REST API backend (FastAPI)** with a **Streamlit frontend chatbot interface.** It enables uploading documents, performing semantic search queries, and serving answers with citations — useful for building healthcare assistants, knowledge assistants, or medical help systems.
+
+---
+
+##  Key Features
+
+###  RAG Search API (FastAPI backend)
+
+ Semantic search against uploaded document stores
+ Natural language Q&A with grounding citations
+ Upload single files or bulk directories
+ Health checks and store management endpoints
+ Caching layer for repeated queries
+
+> API endpoints include:
+
+* **GET /** – health check
+* **POST /api/search** – run query + generate answer
+* **POST /api/summarize** – summarize a document store
+* **POST /api/upload** – upload a file to a store
+* **GET /api/stores** – list available stores
+* **POST /api/stores** – create new store
+* **DELETE /api/stores/{store_name}** – delete store
+* **GET /api/store-info/{store_name}** – get store info
+
+> Backend uses a modular search manager, document processor, and response handler for RAG generation. ([GitHub][1])
+
+---
+
+##  Conversational Chat UI (Streamlit frontend)
+
+A **chat interface (Streamlit)** to interact with users, sending questions to the backend API and displaying AI-generated responses.
+
+ Launched via `main.py` which starts the Streamlit app:
+
+```bash
+python main.py
+```
+
+---
+
+##  Tech Stack
+
+| Layer              | Technology                                 |
+| ------------------ | ------------------------------------------ |
+| Backend API        | **FastAPI**                                |
+| Chat Interface     | **Streamlit**                              |
+| CORS               | Built-in FastAPI middleware                |
+| RAG Components     | Custom search manager, document processing |
+| Language           | **Python 3.x**                             |
+| Package Management | `requirements.txt`                         |
+
+---
+
+##  Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/krishnahn/healthcare_assist.git
+cd healthcare_assist
+```
+
+### 2. Create Virtual Environment (recommended)
+
+```bash
+python3 -m venv venv
+source venv/bin/activate    # macOS/Linux
+venv\Scripts\activate       # Windows
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+> Make sure Python ≥ 3.8 is used.
+> If missing packages or imports occur, install them individually.
+
+---
+
+##  Running the Application
+
+###  Start Backend API
+
+```bash
+uvicorn api:app --reload --host 0.0.0.0 --port 8000
+```
+
+###  Start Streamlit Chat UI
+
+```bash
+python main.py
+```
+
+Then navigate to the browser URL shown by Streamlit (usually `http://localhost:8501`).
+
+---
+
+##  API Examples
+
+### Search Example (curl)
+
+```bash
+curl -X POST http://localhost:8000/api/search \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What is hypertension?","store_name":"medical_docs"}'
+```
+
+### Upload File
+
+```bash
+curl -X POST http://localhost:8000/api/upload \
+  -F "file=@yourfile.pdf" \
+  -F "store_name=medical_docs"
+```
+
+---
+
+##  Expected Repository Structure
+
+```
+healthcare_assist/
+├── api.py
+├── main.py
+├── requirements.txt
+├── src/                  # backend modules (RAG, search, processing)
+├── frontend/             # Streamlit UI code
+├── data/                 # example data store
+└── tests/                # test suites (if present)
+```
+
+---
+
+##  Contributing
+
+Contributions are welcome! Good ways to contribute:
+
+* Fix bugs or improve API documentation
+* Add tests and CI integration
+* Improve RAG retrieval performance
+* Expand frontend interactions and UI experience
+* Add authentication or deployment scripts
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes & open Pull Request
+
+---
+
+## ⚖️ License
+
+This project currently has no explicit license in the repo. Adding an open-source license (MIT, Apache-2.0, etc.) is recommended for clarity.
+
+---
+
+##  Disclaimer
+
+**Healthcare Assist is for educational/demo purposes only.** It is *not a medical diagnosis tool*. Do not replace professional medical advice with responses generated by this system.
+
 
